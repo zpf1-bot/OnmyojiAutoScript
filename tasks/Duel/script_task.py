@@ -173,6 +173,12 @@ class ScriptTask(GameUi, GeneralBattle, SwitchSoul, DuelAssets, SwitchOnmyoji):
             if self.appear_then_click(self.I_UI_BACK_RED, interval=1.2):  # 关闭段位上升页面
                 ret_timer.reset()
                 continue
+            # MVP结算界面（使用"我的阵容"OCR识别）
+            if self.ocr_appear(self.O_D_MVP_MY_TEAM, interval=0.5):
+                logger.info('MVP interface detected, clicking to close')
+                self.click(random_click(ltrb=(True, True, False, True)), interval=1.2)
+                battle_win = True
+                continue
             if ret_timer.started() and ret_timer.reached():  # 兜底逻辑, 已经结算了但是还没有到斗技主界面
                 self.ui_goto_page(page_duel)
                 break

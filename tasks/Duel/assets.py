@@ -58,7 +58,8 @@ class DuelAssets:
 	I_D_CHECK_BAN = RuleImage(roi_front=(611,36,56,62), roi_back=(590,14,100,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_d_check_ban.png")
 	# 斗技荣誉图标 
 	I_DUEL_HONOR = RuleImage(roi_front=(211,636,20,20), roi_back=(200,601,130,100), threshold=0.8, method="Template matching", file="./tasks/Duel/duel/duel_duel_honor.png")
-
+	# MVP结算界面-我的阵容 
+	O_D_MVP_MY_TEAM = RuleOcr(roi=(80,580,150,40), area=(80,580,150,40), mode="Single", method="Default", keyword="的降客", name="d_mvp_my_team")
 
 	# Ocr Rule Assets
 	# 荣誉 
