@@ -159,11 +159,11 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
             if current_scene == DokanScene.RYOU_DOKAN_SCENE_GATHERING:
                 logger.debug(f"Ryou DOKAN gathering...")
                 # 如果还未选择优先攻击，选一下
-                if not self.attack_priority_selected:
-                    self.dokan_choose_attack_priority(attack_priority=attack_priority)
-                    self.attack_priority_selected = True
-                    continue
-                self.switch_soul_in_dokan()
+                # if not self.attack_priority_selected:
+                #     self.dokan_choose_attack_priority(attack_priority=attack_priority)
+                #     self.attack_priority_selected = True
+                #     continue
+                # self.switch_soul_in_dokan()
 
                 self.device.click_record_clear()
                 self.device.stuck_record_clear()

@@ -147,12 +147,12 @@ class ScriptTask(GeneralBattle, GameUi, SwitchSoul, RyouToppaAssets):
             logger.info('RyouToppa is 100%')
             self.plan_tomorrow_ryoutoppa()
             raise TaskEnd
-        if self.config.ryou_toppa.general_battle_config.lock_team_enable:
-            logger.info("Lock team.")
-            self.ui_click(self.I_TOPPA_UNLOCK_TEAM, self.I_TOPPA_LOCK_TEAM)
-        else:
-            logger.info("Unlock team.")
-            self.ui_click(self.I_TOPPA_LOCK_TEAM, self.I_TOPPA_UNLOCK_TEAM)
+        # if self.config.ryou_toppa.general_battle_config.lock_team_enable:
+        #     logger.info("Lock team.")
+        #     self.ui_click(self.I_TOPPA_UNLOCK_TEAM, self.I_TOPPA_LOCK_TEAM)
+        # else:
+        #     logger.info("Unlock team.")
+        #     self.ui_click(self.I_TOPPA_LOCK_TEAM, self.I_TOPPA_UNLOCK_TEAM)
         # --------------------------------------------------------------------------------------------------------------
         # 开始突破
         # --------------------------------------------------------------------------------------------------------------

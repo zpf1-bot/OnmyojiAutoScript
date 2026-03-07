@@ -10,6 +10,7 @@ from tasks.KekkaiUtilize.assets import KekkaiUtilizeAssets
 from tasks.Restart.assets import RestartAssets
 from tasks.base_task import BaseTask as BT
 from tasks.RyouToppa.assets import RyouToppaAssets
+from tasks.Duel.assets import DuelAssets
 
 
 class PageRegistry:
@@ -120,7 +121,7 @@ page_exploration.link(button=G.I_EXPLORATION_GOTO_HERO_TEST, destination=page_he
 
 # ************************************* 町中部分 *****************************************#
 # 斗技 duel
-page_duel = Page(G.I_CHECK_DUEL)
+page_duel = Page(check_button=[G.I_CHECK_DUEL, DuelAssets.I_D_HELP, DuelAssets.I_D_CELEB_STAR, DuelAssets.I_D_CELEB_HONOR])
 page_duel.link(button=G.I_BACK_YOLLOW, destination=page_town)
 page_town.link(button=G.I_TOWN_GOTO_DUEL, destination=page_duel)
 # 逢魔之时 demon_encounter
