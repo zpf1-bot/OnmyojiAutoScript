@@ -106,6 +106,15 @@ class CaptureNemuIpc(CaptureStd):
         if self.is_capturing():
             return self
 
+        # Ensure sys.stdout and sys.stderr are valid before calling super().__enter__()
+        # This handles cases where a previous __exit__ failed to restore them properly
+        if sys.stdout is None:
+            logger.warning('sys.stdout was None, restoring from sys.__stdout__')
+            sys.stdout = sys.__stdout__
+        if sys.stderr is None:
+            logger.warning('sys.stderr was None, restoring from sys.__stderr__')
+            sys.stderr = sys.__stderr__
+
         super().__enter__()
         CaptureNemuIpc.instance = self
         return self
