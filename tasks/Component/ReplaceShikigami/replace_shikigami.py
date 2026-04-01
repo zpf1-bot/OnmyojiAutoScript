@@ -21,12 +21,13 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
             self.screenshot()
         return self.appear(self.I_RS_RECORDS_SHIKI, interval=0.5)
 
-    def switch_shikigami_class(self, shikigami_class: ShikigamiClass = ShikigamiClass.N):
+    def switch_shikigami_class(self, shikigami_class: ShikigamiClass = ShikigamiClass.N, timeout: float = 15):
         """
         要求在式神育成的界面
         切换分类
         :param shikigami_class:
         :param shikigami_order:
+        :param timeout: 最大等待时间（秒），超时后抛出异常
         :return:
         """
         match_selected = {ShikigamiClass.MATERIAL: self.I_RS_MATERIAL_SELECTED,
@@ -46,7 +47,8 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
         check_selected = match_selected[shikigami_class]
         check_click = match_click[shikigami_class]
         # 选择式神的种类
-        while 1:
+        timeout_timer = Timer(timeout).start()
+        while not timeout_timer.reached():
             self.screenshot()
 
             if self.appear(check_selected):
@@ -57,6 +59,11 @@ class ReplaceShikigami(BaseTask, ReplaceShikigamiAssets):
                 continue
             if self.click(self.C_SHIKIGAMI_SWITCH_1, interval=3.5):
                 continue
+        else:
+            # 超时后保存截图并抛出异常
+            self.save_image(content=f'switch_shikigami_class timeout: {shikigami_class}')
+            logger.warning(f'switch_shikigami_class({shikigami_class}) timeout after {timeout}s')
+            raise GameStuckError(f'Failed to switch shikigami class: {shikigami_class}')
         logger.info('Select shikigami class: %s' % shikigami_class)
 
     def unset_shikigami_max_lv(self):
