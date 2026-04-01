@@ -108,12 +108,30 @@ class CaptureNemuIpc(CaptureStd):
 
         # Ensure sys.stdout and sys.stderr are valid before calling super().__enter__()
         # This handles cases where a previous __exit__ failed to restore them properly
-        if sys.stdout is None:
-            logger.warning('sys.stdout was None, restoring from sys.__stdout__')
-            sys.stdout = sys.__stdout__
-        if sys.stderr is None:
-            logger.warning('sys.stderr was None, restoring from sys.__stderr__')
-            sys.stderr = sys.__stderr__
+        if sys.stdout is None or not hasattr(sys.stdout, 'fileno') or sys.stdout.fileno() < 0:
+            logger.warning('sys.stdout is invalid, restoring from sys.__stdout__')
+            if sys.__stdout__ is not None and hasattr(sys.__stdout__, 'fileno'):
+                sys.stdout = sys.__stdout__
+            else:
+                # Fallback: create a dummy stdout using raw file descriptor 1
+                logger.warning('sys.__stdout__ is also invalid, using os.fdopen(1)')
+                try:
+                    sys.stdout = os.fdopen(1, 'w')
+                except (OSError, ValueError):
+                    # Last resort: open devnull
+                    sys.stdout = open(os.devnull, 'w')
+        if sys.stderr is None or not hasattr(sys.stderr, 'fileno') or sys.stderr.fileno() < 0:
+            logger.warning('sys.stderr is invalid, restoring from sys.__stderr__')
+            if sys.__stderr__ is not None and hasattr(sys.__stderr__, 'fileno'):
+                sys.stderr = sys.__stderr__
+            else:
+                # Fallback: create a dummy stderr using raw file descriptor 2
+                logger.warning('sys.__stderr__ is also invalid, using os.fdopen(2)')
+                try:
+                    sys.stderr = os.fdopen(2, 'w')
+                except (OSError, ValueError):
+                    # Last resort: open devnull
+                    sys.stderr = open(os.devnull, 'w')
 
         super().__enter__()
         CaptureNemuIpc.instance = self
@@ -336,7 +354,13 @@ class NemuIpcImpl:
         # Get to actual error message printed in std
         if err:
             logger.warning(f'Failed to call {func.__name__}, result={result}')
-            with CaptureNemuIpc():
+            try:
+                with CaptureNemuIpc():
+                    result = self._ev.run_until_complete(self.ev_run_async(func, *args, **kwargs))
+            except AttributeError as e:
+                # CaptureNemuIpc failed (e.g., sys.stdout is None and couldn't be restored)
+                # Skip capturing and just execute the function
+                logger.warning(f'CaptureNemuIpc failed, skipping capture: {e}')
                 result = self._ev.run_until_complete(self.ev_run_async(func, *args, **kwargs))
 
         return result
