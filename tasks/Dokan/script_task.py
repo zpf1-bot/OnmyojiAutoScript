@@ -172,7 +172,7 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
             # 场景状态：等待馆主战开始
             if current_scene == DokanScene.RYOU_DOKAN_SCENE_BOSS_WAITING:
                 logger.debug(f"Ryou DOKAN boss battle waiting...")
-                self.switch_soul_in_dokan()
+                # self.switch_soul_in_dokan()
 
                 self.device.stuck_record_clear()
                 if cfg.dokan_config.try_start_dokan and cfg.attack_count_config.attack_dokan_master_count() == 0:
@@ -196,7 +196,7 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
                 continue
             # 场景状态：检查右下角有没有挑战？通常是失败了，并退出来到集结界面，可重新开始点击右下角挑战进入战斗
             if current_scene == DokanScene.RYOU_DOKAN_SCENE_START_CHALLENGE:
-                self.switch_soul_in_dokan()
+                # self.switch_soul_in_dokan()
                 self.click(self.I_RYOU_DOKAN_START_CHALLENGE, interval=1)
                 continue
             # 场景状态：馆主第一阵容 且战斗未开始
@@ -259,7 +259,7 @@ class ScriptTask(ExtendGreenMark, GameUi, SwitchSoul, DokanSceneDetector):
                 continue
             # 场景状态：如果CD中，开始加油
             if current_scene == DokanScene.RYOU_DOKAN_SCENE_CD:
-                self.switch_soul_in_dokan()
+                # self.switch_soul_in_dokan()
 
                 self.device.stuck_record_clear()
                 logger.info(f"Fail CD: start cheering={cfg.dokan_config.dokan_auto_cheering_while_cd}..")
