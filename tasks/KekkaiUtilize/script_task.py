@@ -42,8 +42,8 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
         if con.utilize_enable:
             self.check_utilize_add()
 
-        # 查看育成满级
-        self.check_max_lv(con.shikigami_class)
+        # 查看育成满级 - 跳过检查避免切换式神分类超时
+        # self.check_max_lv(con.shikigami_class)
         # 检查蹭卡收获
         self.check_utilize_harvest()
         # 收体力盒子或者是经验盒子
