@@ -715,18 +715,40 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
         return None
 
     def perform_swipe_action(self):
-        """统一滑动操作"""
+        """统一滑动操作，带滑动检测"""
+        import numpy as np
+
         duration = 2
         safe_pos_x = random.randint(340, 600)
         safe_pos_y = random.randint(500, 565)
         p1 = (safe_pos_x, safe_pos_y)
         p2 = (safe_pos_x, safe_pos_y - 416)
         logger.info('Swipe %s -> %s, %sS ' % (point2str(*p1), point2str(*p2), duration))
-        self.device.swipe_adb(p1, p2, duration=duration)
 
-        # self.swipe(self.S_U_UP, duration=1, wait_up_time=1)
+        # 滑动前截图
+        self.screenshot()
+        before_image = self.device.image.copy()
+
+        self.device.swipe_adb(p1, p2, duration=duration)
         self.device.click_record_clear()
-        time.sleep(2)
+
+        # 等待动画完成
+        time.sleep(1)
+
+        # 验证滑动是否成功：检测界面是否有显著变化
+        timeout_timer = Timer(3).start()
+        while not timeout_timer.reached():
+            self.screenshot()
+            after_image = self.device.image
+            # 比较图片是否有显著差异
+            if not np.array_equal(before_image, after_image):
+                logger.info('滑动成功，界面已更新')
+                time.sleep(1)  # 额外等待确保动画完全结束
+                return True
+            time.sleep(0.3)
+
+        logger.warning('滑动后界面无变化，可能卡住了')
+        return False
 
     def check_card_num(self) -> tuple[str, int]:
         """优化版数值提取方法，返回结界卡类型及对应数值"""
