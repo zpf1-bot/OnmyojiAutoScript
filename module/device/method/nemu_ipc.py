@@ -508,16 +508,28 @@ class NemuIpc():
         if self.emulator_instance is None:
             logger.error('Unable to use NemuIpc because emulator instance not found')
             raise RequestHumanTakeover
-        try:
-            return NemuIpcImpl(
-                nemu_folder=self.emulator_instance.emulator.abspath('../'),
-                instance_id=self.emulator_instance.MuMuPlayer12_id,
-                display_id=0
-            ).__enter__()
-        except (NemuIpcIncompatible, NemuIpcError) as e:
-            logger.error(e)
-            logger.error('Unable to initialize NemuIpc')
-            raise RequestHumanTakeover
+
+        # Retry loop for NemuIpc connection
+        for attempt in range(3):
+            try:
+                return NemuIpcImpl(
+                    nemu_folder=self.emulator_instance.emulator.abspath('../'),
+                    instance_id=self.emulator_instance.MuMuPlayer12_id,
+                    display_id=0
+                ).__enter__()
+            except (NemuIpcIncompatible, NemuIpcError) as e:
+                logger.warning(f'NemuIpc connection failed (attempt {attempt + 1}/3): {e}')
+                if attempt < 2:
+                    logger.info('Trying to restart emulator...')
+                    try:
+                        self.emulator_start()
+                        import time
+                        time.sleep(5)  # Wait for emulator to fully start
+                    except Exception as start_error:
+                        logger.error(f'Failed to restart emulator: {start_error}')
+                else:
+                    logger.error('Unable to initialize NemuIpc after 3 attempts')
+                    raise RequestHumanTakeover
 
     def nemu_ipc_available(self) -> bool:
         if not self.is_mumu_family:
