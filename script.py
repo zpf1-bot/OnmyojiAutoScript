@@ -355,7 +355,10 @@ class Script:
 
     def _wait_close_emulator(self, next_run: datetime) -> bool:
         logger.info("Close emulator during wait")
-        self.device.app_stop()
+        try:
+            self.device.app_stop()
+        except Exception as e:
+            logger.warning(f"app_stop failed (emulator may already be closed): {e}")
         self.device.release_during_wait()
         time.sleep(15)
         self.device.emulator_stop()
