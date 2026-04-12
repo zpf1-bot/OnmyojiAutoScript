@@ -35,13 +35,12 @@ class Device(Platform, Screenshot, Control, AppControl):
             try:
                 super().__init__(*args, **kwargs)
                 break
-            except (EmulatorNotRunningError, RequestHumanTakeover) as e:
+            except EmulatorNotRunningError:
                 if trial >= 3:
-                    logger.critical(f'Failed to initialize device after 3 trials: {e}')
+                    logger.critical('Failed to start emulator after 3 trial')
                     raise RequestHumanTakeover
                 # Try to start emulator
                 if self.emulator_instance is not None:
-                    logger.warning(f'Device init failed: {e}, trying to restart emulator...')
                     self.emulator_start()
                 else:
                     logger.critical(
