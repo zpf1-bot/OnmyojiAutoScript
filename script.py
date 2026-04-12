@@ -453,7 +453,7 @@ class Script:
             self.config.notifier.push(title=f'{I18n.trans_zh_cn(command)}{command}', content=f"<{self.config_name}> GameStuckError or GameTooManyClickError")
             self.config.task_call('Restart')
             self.device.sleep(10)
-            return False
+            return True  # 返回True避免增加失败计数
         except GameBugError as e:
             logger.warning(e)
             self.save_error_log()
@@ -462,7 +462,7 @@ class Script:
             logger.warning(f'Restarting {self.device.package} to fix it')
             self.config.task_call('Restart')
             self.device.sleep(10)
-            return False
+            return True  # 返回True避免增加失败计数
         except GamePageUnknownError as e:
             logger.info('Game server may be under maintenance or network may be broken, check server status now')
             # 这个还不重要 留着坑填
