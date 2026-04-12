@@ -676,6 +676,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
                 # 解析结界卡类型和数值
                 card_type, card_value = self.check_card_num()
+                logger.info(f'✅ check_card_num完成: {card_type}@{card_value}')
 
                 # 跳过无效结界卡（类型未知或数值异常）
                 if card_type == 'unknown' or card_value <= 0 or card_type not in RESOURCE_CONFIG:
