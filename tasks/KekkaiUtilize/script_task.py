@@ -755,6 +755,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
     def check_card_num(self) -> tuple[str, int]:
         """优化版数值提取方法，返回结界卡类型及对应数值"""
+        print('check_card_num: 函数开始')
         self.screenshot()
         # OCR识别
         raw_text = self.O_CARD_NUM.ocr(self.device.image)
@@ -780,8 +781,10 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
         if value <= 0:
             self.push_notify(content=f'数值异常: {raw_text} -> 解析值: {value}')
+            print(f'check_card_num: 返回 ({card_type}, 0) via value<=0')
             return card_type, 0
 
+        print(f'check_card_num: 返回 ({card_type}, {value})')
         return card_type, value
 
     def back_guild(self):
