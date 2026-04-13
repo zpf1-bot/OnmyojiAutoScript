@@ -677,7 +677,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                 # 解析结界卡类型和数值
                 logger.info('准备调用check_card_num')
                 card_type, card_value = self.check_card_num()
-                print(f'DEBUG: check_card_num returned {card_type}, {card_value}')  # 直接打印
+                logger.info(f'DEBUG: check_card_num returned {card_type}, {card_value}')
                 logger.info(f'✅ check_card_num完成: {card_type}@{card_value}')
 
                 # 跳过无效结界卡（类型未知或数值异常）
@@ -755,7 +755,7 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
     def check_card_num(self) -> tuple[str, int]:
         """优化版数值提取方法，返回结界卡类型及对应数值"""
-        print('check_card_num: 函数开始')
+        logger.info('check_card_num: 函数开始')
         self.screenshot()
         # OCR识别
         raw_text = self.O_CARD_NUM.ocr(self.device.image)
@@ -781,10 +781,10 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
         if value <= 0:
             self.push_notify(content=f'数值异常: {raw_text} -> 解析值: {value}')
-            print(f'check_card_num: 返回 ({card_type}, 0) via value<=0')
+            logger.info(f'check_card_num: 返回 ({card_type}, 0) via value<=0')
             return card_type, 0
 
-        print(f'check_card_num: 返回 ({card_type}, {value})')
+        logger.info(f'check_card_num: 返回 ({card_type}, {value})')
         return card_type, value
 
     def back_guild(self):
