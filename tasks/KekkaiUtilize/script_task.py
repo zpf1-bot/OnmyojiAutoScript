@@ -675,9 +675,9 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                 time.sleep(2)  # 等待结界卡详情加载
 
                 # 解析结界卡类型和数值
-                logger.info('准备调用check_card_num')
+                logger.info('B1 before check_card_num')
                 card_type, card_value = self.check_card_num()
-                logger.info(f'DEBUG: check_card_num returned {card_type}, {card_value}')
+                logger.info(f'B2 after check_card_num got {card_type}, {card_value}')
                 logger.info(f'✅ check_card_num完成: {card_type}@{card_value}')
 
                 # 跳过无效结界卡（类型未知或数值异常）
@@ -755,36 +755,43 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
     def check_card_num(self) -> tuple[str, int]:
         """优化版数值提取方法，返回结界卡类型及对应数值"""
-        logger.info('check_card_num: 函数开始')
+        logger.info('A1 check_card_num start')
         self.screenshot()
+        logger.info('A2 after screenshot')
         # OCR识别
         raw_text = self.O_CARD_NUM.ocr(self.device.image)
+        logger.info(f'A3 after OCR, raw_text={raw_text}')
 
         # 判断结界卡类型
         if any(c in raw_text for c in ['体', 'カ', '力']):
             card_type = '斗鱼'
+            logger.info('A4 card_type=斗鱼')
         elif any(c in raw_text for c in ['勾', '玉']):
             card_type = '太鼓'
+            logger.info('A4 card_type=太鼓')
         else:
-            logger.warning(f'结界卡类型识别失败，原始内容: {raw_text}')
+            logger.warning(f'A4 UNKNOWN card_type, raw_text={raw_text}')
             return 'unknown', 0  # 未知类型返回0
 
         # 提取纯数字部分（兼容带+号的情况，如+100）
         cleaned = re.sub(r'[^\d+]', '', raw_text)  # 保留数字和加号
+        logger.info(f'A5 cleaned={cleaned}')
         match = re.search(r'\d+', cleaned)  # 匹配连续数字
+        logger.info(f'A6 match={match}')
 
         try:
             value = int(match.group()) if match else 0
+            logger.info(f'A7 value={value}')
         except (ValueError, AttributeError) as e:
-            logger.warning(f'数值转换异常: {e}, cleaned=[{cleaned}]')
+            logger.warning(f'A8 ValueError: {e}, cleaned=[{cleaned}]')
             value = 0
 
         if value <= 0:
             self.push_notify(content=f'数值异常: {raw_text} -> 解析值: {value}')
-            logger.info(f'check_card_num: 返回 ({card_type}, 0) via value<=0')
+            logger.info(f'A9 returning ({card_type}, 0)')
             return card_type, 0
 
-        logger.info(f'check_card_num: 返回 ({card_type}, {value})')
+        logger.info(f'A10 FINAL RETURN ({card_type}, {value})')
         return card_type, value
 
     def back_guild(self):
