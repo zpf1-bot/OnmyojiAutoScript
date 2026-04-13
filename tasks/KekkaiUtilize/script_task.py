@@ -676,8 +676,12 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
                 # 解析结界卡类型和数值
                 logger.info('check_card_num: 调用前')
+                import sys
+                sys.stdout.flush()
                 card_type, card_value = self.check_card_num()
+                sys.stdout.flush()
                 logger.info(f'✅ check_card_num完成: {card_type}@{card_value}')
+                sys.stdout.flush()
 
                 # 跳过无效结界卡（类型未知或数值异常）
                 if card_type == 'unknown' or card_value <= 0 or card_type not in RESOURCE_CONFIG:
@@ -685,10 +689,14 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
                     continue
 
                 # ====== 模式分支处理 ======#
+                sys.stdout.flush()
                 current_max = RESOURCE_CONFIG[card_type]['max']
                 record_attr = RESOURCE_CONFIG[card_type]['record_attr']
+                sys.stdout.flush()
                 current_record = getattr(self, record_attr, 0)
+                sys.stdout.flush()
                 logger.info(f'🔍 识别卡片: {card_type} | 当前值: {card_value}, 最优值: {current_record}')
+                sys.stdout.flush()
 
                 # 更新最佳记录
                 if card_value > current_record:
@@ -790,6 +798,8 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
             return card_type, 0
 
         logger.info(f'check_card_num: 返回 ({card_type}, {value})')
+        import sys
+        sys.stdout.flush()
         return card_type, value
 
     def back_guild(self):
