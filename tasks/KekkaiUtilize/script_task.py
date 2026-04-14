@@ -676,17 +676,21 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
                 # 解析结界卡类型和数值
                 card_type, card_value = self.check_card_num()
-                logger.info(f'✅ check_card_num完成: {card_type}@{card_value}')
+                logger.warning(f'C1 check_card_num returned: {card_type}, {card_value}')
+                logger.warning(f'C2 about to log completion')
 
                 # 跳过无效结界卡（类型未知或数值异常）
                 if card_type == 'unknown' or card_value <= 0 or card_type not in RESOURCE_CONFIG:
+                    logger.warning(f'C3 skipping invalid card')
                     logger.info(f'⏭️ 跳过无效卡: {card_type}@{card_value}')
                     continue
 
+                logger.warning(f'C4 processing valid card')
                 # ====== 模式分支处理 ======#
                 current_max = RESOURCE_CONFIG[card_type]['max']
                 record_attr = RESOURCE_CONFIG[card_type]['record_attr']
                 current_record = getattr(self, record_attr, 0)
+                logger.warning(f'C5 current_record={current_record}')
                 logger.info(f'🔍 识别卡片: {card_type} | 当前值: {card_value}, 最优值: {current_record}')
 
                 # 更新最佳记录
