@@ -676,22 +676,24 @@ class ScriptTask(GameUi, ReplaceShikigami, KekkaiUtilizeAssets):
 
                 # 解析结界卡类型和数值
                 import sys
-                print('B1', flush=True)
+                print('B0', flush=True)
                 card_type, card_value = self.check_card_num()
-                print(f'B2 card_type={card_type} card_value={card_value}', flush=True)
-                sys.stdout.flush()
+                print(f'B1 card_type={card_type} card_value={card_value}', flush=True)
 
+                print('B2 before RESOURCE_CONFIG check', flush=True)
                 # 跳过无效结界卡（类型未知或数值异常）
+                res = card_type not in RESOURCE_CONFIG
+                print(f'B3 RESOURCE_CONFIG check done, res={res}', flush=True)
                 if card_type == 'unknown' or card_value <= 0 or card_type not in RESOURCE_CONFIG:
-                    print(f'B3 skip invalid', flush=True)
+                    print(f'B4 skip invalid', flush=True)
                     continue
 
-                print(f'B4 processing card', flush=True)
+                print(f'B5 processing card', flush=True)
                 # ====== 模式分支处理 ======#
                 current_max = RESOURCE_CONFIG[card_type]['max']
                 record_attr = RESOURCE_CONFIG[card_type]['record_attr']
                 current_record = getattr(self, record_attr, 0)
-                print(f'B5 current_record={current_record}', flush=True)
+                print(f'B6 current_record={current_record}', flush=True)
                 logger.info(f'🔍 识别卡片: {card_type} | 当前值: {card_value}, 最优值: {current_record}')
 
                 # 更新最佳记录
