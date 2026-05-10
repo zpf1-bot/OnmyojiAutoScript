@@ -134,6 +134,9 @@ class LoginHandler(BaseTask, RestartAssets, GameUiAssets):
                 
             # 点击’进入游戏‘
             if not self.appear(self.I_LOGIN_8):
+                time.sleep(10)
+                self.device.click(x=640, y=360)
+                logger.info('Click screen to skip CG')
                 continue
             
             # 登录体验服时，点击“进入游戏”速度过快，可能会出现体验服的弹窗
