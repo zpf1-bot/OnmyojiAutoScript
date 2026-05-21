@@ -31,5 +31,9 @@ class Optimization(BaseModel):
                                               description='close_emulator_wait_duration_help')
     emulator_startup_lead_time: Time = Field(default=Time(minute=2),
                                             description='emulator_startup_lead_time_help')
+    # 模拟器启动避让配置
+    max_running_emulators: int = Field(default=99,
+        description='最大允许运行的模拟器数量, 99表示不限制')
+    
     schedule_rule: ScheduleRule = Field(default=ScheduleRule.FILTER, description='schedule_rule_help')
 
