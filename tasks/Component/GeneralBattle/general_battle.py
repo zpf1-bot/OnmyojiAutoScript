@@ -217,6 +217,10 @@ class GeneralBattle(GeneralBuff, GeneralBattleAssets):
                     continue
                 if not self.appear(self.I_FALSE, threshold=0.6):
                     return False
+        time.sleep(1)
+        self.device.click(x=640, y=360)
+        logger.info('Click screen to skip unknown scene')
+        
         # 最后保证能点击 获得奖励
         if not self.wait_until_appear(self.I_REWARD):
             # 有些的战斗没有下面的奖励，所以直接返回
